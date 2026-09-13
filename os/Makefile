@@ -1,6 +1,6 @@
 # Building
 TARGET := riscv64gc-unknown-none-elf
-MODE := release
+MODE := debug
 KERNEL_ELF := target/$(TARGET)/$(MODE)/os
 KERNEL_BIN := $(KERNEL_ELF).bin
 DISASM_TMP := target/$(TARGET)/$(MODE)/asm
@@ -29,7 +29,7 @@ build: env $(KERNEL_BIN)
 
 env:
 	(rustup target list | grep "riscv64gc-unknown-none-elf (installed)") || rustup target add $(TARGET)
-	cargo install cargo-binutils --locked
+	(command -v rust-objcopy >/dev/null && command -v rust-objdump >/dev/null) || cargo install cargo-binutils
 	rustup component add rust-src
 	rustup component add llvm-tools-preview
 
@@ -57,8 +57,8 @@ run-inner: build
 	@qemu-system-riscv64 \
 		-machine virt \
 		-nographic \
-		-bios $(BOOTLOADER) \
-		-device loader,file=$(KERNEL_BIN),addr=$(KERNEL_ENTRY_PA)
+		-bios default \
+		-kernel $(KERNEL_BIN)
 
 debug: build
 	@tmux new-session -d \
