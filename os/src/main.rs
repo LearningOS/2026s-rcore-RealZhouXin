@@ -32,7 +32,9 @@ pub fn clear_bss() {
         fn sbss();
         fn ebss();
     }
-    (sbss as *const () as usize..ebss as *const () as usize)
+    let bss_start = sbss as *const () as usize;
+    let bss_end = ebss as *const () as usize;
+    (bss_start..bss_end)
         .for_each(|a| unsafe { (a as *mut u8).write_volatile(0) });
 }
 

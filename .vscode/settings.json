@@ -19,6 +19,15 @@
         "srodata",
         "stext"
     ],
+    // rust-lldb 是包装脚本，不提供独立的动态库或 server。
+    "lldb.library": "/opt/homebrew/opt/lldb/lib/liblldb.dylib",
+    "lldb.server": "/opt/homebrew/opt/lldb/bin/lldb-server",
+    // 加载当前 stable Rust 工具链的显示脚本，与 rust-lldb 的行为一致。
+    "lldb.launch.initCommands": [
+        // 关闭缺少语言插件的提示；Rust 显示脚本仍正常加载。
+        "settings set target.process.unsupported-language-warnings false",
+        "command script import \"/Users/zhouxin/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/etc/lldb_lookup.py\""
+    ],
     // "rust-analyzer.cargo.features": [
     //     "board_qemu"
     // ]
